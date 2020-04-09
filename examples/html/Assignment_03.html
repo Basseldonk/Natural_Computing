@@ -1,0 +1,65 @@
+<!-- Page setup and title -->
+<!DOCTYPE html>
+<html lang="en">
+<head><meta http-equiv="Content-Type" content="text/html;
+charset=UTF-8">
+<title>Assignment 3 (The Chromosomes)</title>
+<style type="text/css">
+body{
+	font-family: "HelveticaNeue-Light", sans-serif; padding : 15px;
+}
+</style>
+
+<!-- Sourcing the cpm build -->
+<script src="../../build/cpm.js"></script>
+<script src="./fpsmeter.min.js"></script>
+<script>
+"use strict"
+
+let config = {
+	// Grid settings
+	ndim : 2,
+	field_size : [250,250],
+	// CPM parameters and configuration
+	conf : {
+		T : 20, 							// CPM temperature
+		J : [[0,20,20], 
+			 [20,100,20],
+			 [20,20,20]],					// Adhesion parameters
+		LAMBDA_V : [0,50,50],				// VolumeConstraint importance per cellkind
+		V : [0,200,400],					// Target volume of each cellkind
+		LAMBDA_P : [0,10,0],				// PerimeterConstraint importance per cellkind
+		P : [0,25,0]	 					// Target perimeter of each cellkind
+	},
+	// Simulation setup and configuration
+	simsettings : {
+		NRCELLS : [5, 10], 					// Number of cells to seed for all
+		RUNTIME : 500, 						// Only used in node
+		CANVASCOLOR : "eaecef",
+		CELLCOLOR : ["000000","808080"],	// Cellcolor per cellkind
+		SHOWBORDERS : [true, false],		// Show borders
+		zoom : 3							// zoom in on canvas with this factor.
+	}
+}
+
+let sim, meter
+function initialize(){
+	sim = new CPM.Simulation( config )
+	meter = new FPSMeter({left:"auto", right:"5px"})
+	step()
+}
+function step(){
+	sim.step()
+	meter.tick()
+	requestAnimationFrame( step )
+}
+
+</script>
+</head>
+<body onload="initialize()">
+<h1>Assignment 3</h1>
+<p>
+This simulation was created by the Chromosomes as part of assignment 3 for the course Natural Computing.
+</p>
+</body>
+</html>
