@@ -33,7 +33,7 @@ let config = {
 	},
 	// Simulation setup and configuration
 	simsettings : {
-		NRCELLS : [5, 10], 					// Number of cells to seed for all
+		NRCELLS : [0, 10], 					// Number of cells to seed for all
 		RUNTIME : 500, 						// Only used in node
 		CANVASCOLOR : "eaecef",
 		CELLCOLOR : ["000000","808080"],	// Cellcolor per cellkind
@@ -43,8 +43,10 @@ let config = {
 }
 
 let sim, meter
+
 function initialize(){
-	sim = new CPM.Simulation( config )
+	let custommethods = { initializeGrid : initializeGrid }
+	sim = new CPM.Simulation( config, custommethods )
 	meter = new FPSMeter({left:"auto", right:"5px"})
 	step()
 }
@@ -52,6 +54,20 @@ function step(){
 	sim.step()
 	meter.tick()
 	requestAnimationFrame( step )
+}
+
+function initializeGrid(){
+	// add the initializer if not already there
+	if( !this.helpClasses["gm"] ){ this.addGridManipulator() }
+	// Seed obstacles
+	let obstacles = 4 		// This value controls the number of obstacles per row and column
+	let per_row = parseInt( this.C.extents[0] / obstacles )
+	let per_column = parseInt( this.C.extents[1] / obstacles )
+	for( var i = parseInt( per_row / 2 ) ; i < this.C.extents[0] ; i += per_row ){
+		for( var j = parseInt (per_column / 2 ) ; j < this.C.extents[1] ; j += per_column ){
+			this.gm.seedCellAt( 1, [i,j] )
+		}
+	}
 }
 
 </script>
