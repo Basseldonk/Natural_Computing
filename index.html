@@ -33,11 +33,11 @@ let config = {
 	},
 	// Simulation setup and configuration
 	simsettings : {
-		NRCELLS : [0, 10], 					// Number of cells to seed for all
+		NRCELLS : [16, 10],					// Number of cells to seed for all, first number is for obstacles and should be the square of the number of cells you want per row and collumn
 		RUNTIME : 500, 						// Only used in node
 		CANVASCOLOR : "eaecef",
 		CELLCOLOR : ["000000","808080"],	// Cellcolor per cellkind
-		SHOWBORDERS : [true, false],		// Show borders
+		SHOWBORDERS : [true, true],		// Show borders
 		zoom : 3							// zoom in on canvas with this factor.
 	}
 }
@@ -59,14 +59,20 @@ function step(){
 function initializeGrid(){
 	// add the initializer if not already there
 	if( !this.helpClasses["gm"] ){ this.addGridManipulator() }
+
 	// Seed obstacles
-	let obstacles = 4 		// This value controls the number of obstacles per row and column
+	let obstacles = parseInt( Math.sqrt(this.conf["NRCELLS"][0]) )
 	let per_row = parseInt( this.C.extents[0] / obstacles )
 	let per_column = parseInt( this.C.extents[1] / obstacles )
 	for( var i = parseInt( per_row / 2 ) ; i < this.C.extents[0] ; i += per_row ){
 		for( var j = parseInt (per_column / 2 ) ; j < this.C.extents[1] ; j += per_column ){
 			this.gm.seedCellAt( 1, [i,j] )
 		}
+	}
+	// Seed moving cells
+	let nr_of_cells = this.conf["NRCELLS"][1]
+	for (nr_of_cells ; nr_of_cells > 0 ; nr_of_cells -= 1){
+		this.gm.seedCell( 2 )
 	}
 }
 
